@@ -24,8 +24,3 @@ public class ModEntities {
                             .updateInterval(1)
                             .build("klusha"));
 }
-
-
-
-
-
