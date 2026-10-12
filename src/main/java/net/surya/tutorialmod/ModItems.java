@@ -14,5 +14,12 @@ public class ModItems {
 
     public static final RegistryObject<Item> KLUSHA =
             ITEMS.register("klusha",
-                    () -> new Item(new Item.Properties()));
+                    () -> new KlushaItem(
+                            new Item.Properties().stacksTo(1)
+                    ));
 }
+
+
+
+
+
