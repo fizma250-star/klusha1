@@ -58,6 +58,7 @@ public class KlushaEntity extends ThrowableItemProjectile {
         if (!returning && !isRemoved()) {
             setYRot(getYRot() + 25.0F);
             setXRot(getXRot() + 25.0F);
+            setRot(getYRot(), getXRot());
         }
 
         if (level().isClientSide) {
