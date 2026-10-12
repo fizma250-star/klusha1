@@ -13,6 +13,6 @@ public class ModItems {
             );
 
     public static final RegistryObject<Item> KLUSHA =
-            ITEMS.register("klusha",
+            ITEMS.register("Klusha",
                     () -> new Item(new Item.Properties()));
 }
