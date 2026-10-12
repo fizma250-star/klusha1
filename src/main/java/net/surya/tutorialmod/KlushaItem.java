@@ -3,22 +3,23 @@ package net.surya.tutorialmod;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.SwordItem;
+import net.minecraft.world.item.Tiers;
 import net.minecraft.world.level.Level;
 
-public class KlushaItem extends Item {
+public class KlushaItem extends SwordItem {
 
     public KlushaItem(Properties properties) {
-        super(properties);
+        super(Tiers.WOOD, 14, -2.4F, properties);
     }
 
     @id86240433 (@Override)
     public InteractionResultHolder<ItemStack> use(
             Level level,
             Player player,
-            InteractionHand hand
-    ) {
+            InteractionHand hand) {
+
         ItemStack stack = player.getItemInHand(hand);
 
         if (player.getCooldowns().isOnCooldown(this)) {
@@ -26,11 +27,8 @@ public class KlushaItem extends Item {
         }
 
         if (!level.isClientSide) {
-            KlushaEntity klusha = new KlushaEntity(
-                    level,
-                    player,
-                    stack.copyWithCount(1)
-            );
+            KlushaEntity klusha =
+                    new KlushaEntity(level, player, stack.copyWithCount(1));
 
             klusha.shootFromRotation(
                     player,
@@ -42,15 +40,16 @@ public class KlushaItem extends Item {
             );
 
             level.addFreshEntity(klusha);
-
             stack.shrink(1);
-
             player.getCooldowns().addCooldown(this, 20);
         }
 
         return InteractionResultHolder.sidedSuccess(
                 stack,
-                level.isClientSide()
+                level.isClientSide
         );
     }
 }
+
+
+
