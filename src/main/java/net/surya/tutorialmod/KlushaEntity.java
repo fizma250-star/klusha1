@@ -17,6 +17,7 @@ public class KlushaEntity extends ThrowableItemProjectile {
     private double distanceTravelled = 0.0;
     private boolean returning = false;
     private boolean itemReturned = false;
+    private int returnDelay = 0;
 
     public KlushaEntity(
             EntityType<? extends KlushaEntity> type,
@@ -43,8 +44,21 @@ public class KlushaEntity extends ThrowableItemProjectile {
     }
 
     @Override
+    public boolean hurt(
+            net.minecraft.world.damagesource.DamageSource source,
+            float amount) {
+        return false;
+    }
+
+    @Override
     public void tick() {
         super.tick();
+
+        // Вращение модели во время полёта
+        if (!returning && !isRemoved()) {
+            setYRot(getYRot() + 25.0F);
+            setXRot(getXRot() + 25.0F);
+        }
 
         if (level().isClientSide) {
             return;
@@ -53,6 +67,12 @@ public class KlushaEntity extends ThrowableItemProjectile {
         Entity owner = getOwner();
 
         if (returning) {
+            if (returnDelay > 0) {
+                returnDelay--;
+                setDeltaMovement(Vec3.ZERO);
+                return;
+            }
+
             if (!(owner instanceof Player player) || !player.isAlive()) {
                 discard();
                 return;
@@ -84,6 +104,8 @@ public class KlushaEntity extends ThrowableItemProjectile {
 
         if (distanceTravelled >= 15.0) {
             returning = true;
+            returnDelay = 10;
+            setDeltaMovement(Vec3.ZERO);
         }
     }
 
@@ -106,17 +128,19 @@ public class KlushaEntity extends ThrowableItemProjectile {
         }
 
         returning = true;
+        returnDelay = 10;
+        setDeltaMovement(Vec3.ZERO);
     }
 
     @Override
     protected void onHitBlock(BlockHitResult result) {
-        if (!level().isClientSide) {
+        if (!level().isClientSide && !returning) {
             returning = true;
+            returnDelay = 10;
+            setDeltaMovement(Vec3.ZERO);
         }
     }
 }
-
-
 
 
 
