@@ -1,28 +1,57 @@
 package net.surya.tutorialmod;
 
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.MobCategory;
+import java.util.UUID;
+
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemAttributeModifiers;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
-public class ModEntities {
+public class ModItems {
 
-    public static final DeferredRegister<EntityType<?» ENTITIES =
+    public static final DeferredRegister<Item> ITEMS =
             DeferredRegister.create(
-                    ForgeRegistries.ENTITY_TYPES,
+                    ForgeRegistries.ITEMS,
                     TutorialMod.MOD_ID
             );
 
-    public static final RegistryObject<EntityType<KlushaEntity» KLUSHA =
-            ENTITIES.register("klusha",
-                    () -> EntityType.Builder
-                            .<KlushaEntity>of(
-                                    KlushaEntity::new,
-                                    MobCategory.MISC
-                            )
-                            .sized(0.6F, 0.6F)
-                            .clientTrackingRange(8)
-                            .updateInterval(1)
-                            .build("klusha"));
+    public static final RegistryObject<Item> KLUSHA =
+            ITEMS.register("klusha", () ->
+                    new KlushaItem(
+                            new Item.Properties()
+                                    .stacksTo(1)
+                                    .attributes(
+                                            ItemAttributeModifiers.builder()
+                                                    .add(
+                                                            Attributes.ATTACK_DAMAGE,
+                                                            new AttributeModifier(
+                                                                    UUID.fromString(
+                                                                            "b5a30b11-4a5a-4f6b-a721-2b2c8c091234"
+                                                                    ),
+                                                                    "Klusha damage",
+                                                                    14.0,
+                                                                    AttributeModifier.Operation.ADDITION
+                                                            ),
+                                                            EquipmentSlot.MAINHAND
+                                                    )
+                                                    .add(
+                                                            Attributes.ATTACK_SPEED,
+                                                            new AttributeModifier(
+                                                                    UUID.fromString(
+                                                                            "b5a30b11-4a5a-4f6b-a721-2b2c8c091235"
+                                                                    ),
+                                                                    "Klusha attack speed",
+                                                                    -2.4,
+                                                                    AttributeModifier.Operation.ADDITION
+                                                            ),
+                                                            EquipmentSlot.MAINHAND
+                                                    )
+                                                    .build()
+                                    )
+                    )
+            );
 }
