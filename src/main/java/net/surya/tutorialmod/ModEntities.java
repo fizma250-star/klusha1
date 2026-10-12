@@ -8,13 +8,13 @@ import net.minecraftforge.registries.RegistryObject;
 
 public class ModEntities {
 
-    public static final DeferredRegister<EntityType<?» ENTITIES =
+    public static final DeferredRegister<EntityType<?>> ENTITIES =
             DeferredRegister.create(
                     ForgeRegistries.ENTITY_TYPES,
                     TutorialMod.MOD_ID
             );
 
-    public static final RegistryObject<EntityType<KlushaEntity» KLUSHA =
+    public static final RegistryObject<EntityType<KlushaEntity>> KLUSHA =
             ENTITIES.register("klusha",
                     () -> EntityType.Builder.<KlushaEntity>of(
                             KlushaEntity::new,
