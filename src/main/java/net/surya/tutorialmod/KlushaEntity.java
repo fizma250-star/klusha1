@@ -58,9 +58,10 @@ public class KlushaEntity extends ThrowableItemProjectile {
                 return;
             }
 
-            Vec3 difference = player.getEyePosition().subtract(position());
+            Vec3 difference =
+                    player.getEyePosition().subtract(position());
 
-            if (difference.lengthSqr() < 1.5 * 1.5) {
+            if (difference.lengthSqr() < 2.25) {
                 if (!itemReturned) {
                     ItemStack stack = getItem().copyWithCount(1);
                     itemReturned = true;
@@ -114,3 +115,8 @@ public class KlushaEntity extends ThrowableItemProjectile {
         }
     }
 }
+
+
+
+
+
