@@ -32,17 +32,17 @@ public class KlushaEntity extends ThrowableItemProjectile {
         setItem(stack.copyWithCount(1));
     }
 
-    @id86240433 (@Override)
+    @Override
     protected Item getDefaultItem() {
         return ModItems.KLUSHA.get();
     }
 
-    @id86240433 (@Override)
+    @Override
     protected float getGravity() {
         return 0.0F;
     }
 
-    @id86240433 (@Override)
+    @Override
     public void tick() {
         super.tick();
 
@@ -87,7 +87,7 @@ public class KlushaEntity extends ThrowableItemProjectile {
         }
     }
 
-    @id86240433 (@Override)
+    @Override
     protected void onHitEntity(EntityHitResult result) {
         if (level().isClientSide || returning) {
             return;
@@ -108,7 +108,7 @@ public class KlushaEntity extends ThrowableItemProjectile {
         returning = true;
     }
 
-    @id86240433 (@Override)
+    @Override
     protected void onHitBlock(BlockHitResult result) {
         if (!level().isClientSide) {
             returning = true;
