@@ -7,6 +7,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 public class ModEntities {
+
     public static final DeferredRegister<EntityType<?» ENTITIES =
             DeferredRegister.create(
                     ForgeRegistries.ENTITY_TYPES,
@@ -16,11 +17,12 @@ public class ModEntities {
     public static final RegistryObject<EntityType<KlushaEntity» KLUSHA =
             ENTITIES.register("klusha",
                     () -> EntityType.Builder.<KlushaEntity>of(
-                                    KlushaEntity::new,
-                                    MobCategory.MISC
-                            )
-                            .sized(0.6F, 0.6F)
-                            .clientTrackingRange(8)
-                            .updateInterval(1)
-                            .build("klusha"));
+                            KlushaEntity::new,
+                            MobCategory.MISC
+                    )
+                    .sized(0.6F, 0.6F)
+                    .clientTrackingRange(8)
+                    .updateInterval(1)
+                    .build("klusha")
+            );
 }
