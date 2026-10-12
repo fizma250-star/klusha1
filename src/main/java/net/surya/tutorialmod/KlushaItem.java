@@ -44,7 +44,7 @@ public class KlushaItem extends SwordItem {
 
             level.addFreshEntity(klusha);
             stack.shrink(1);
-            player.getCooldowns().addCooldown(this, 20);
+            player.getCooldowns().addCooldown(this, 60);
         }
 
         return InteractionResultHolder.sidedSuccess(
