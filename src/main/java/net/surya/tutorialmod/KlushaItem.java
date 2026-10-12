@@ -27,8 +27,11 @@ public class KlushaItem extends SwordItem {
         }
 
         if (!level.isClientSide) {
-            KlushaEntity klusha =
-                    new KlushaEntity(level, player, stack.copyWithCount(1));
+            KlushaEntity klusha = new KlushaEntity(
+                    level,
+                    player,
+                    stack.copyWithCount(1)
+            );
 
             klusha.shootFromRotation(
                     player,
