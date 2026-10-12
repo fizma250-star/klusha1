@@ -43,7 +43,11 @@ public class KlushaItem extends SwordItem {
             );
 
             level.addFreshEntity(klusha);
-            stack.shrink(1);
+            if (!player.getAbilities().instabuild) {
+    stack.shrink(1);
+} else {
+    player.setItemInHand(hand, ItemStack.EMPTY);
+}
             player.getCooldowns().addCooldown(this, 60);
         }
 
