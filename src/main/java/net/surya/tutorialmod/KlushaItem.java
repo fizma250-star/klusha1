@@ -14,7 +14,7 @@ public class KlushaItem extends SwordItem {
         super(Tiers.WOOD, 14, -2.4F, properties);
     }
 
-    @id86240433 (@Override)
+    @Override
     public InteractionResultHolder<ItemStack> use(
             Level level,
             Player player,
