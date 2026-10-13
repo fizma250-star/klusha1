@@ -5,7 +5,7 @@ import software.bernie.geckolib.model.GeoModel;
 
 public class KlushaModel extends GeoModel<KlushaEntity> {
 
-    @id86240433 (@Override)
+    @Override
     public ResourceLocation getModelResource(KlushaEntity entity) {
         return new ResourceLocation(
                 TutorialMod.MOD_ID,
@@ -13,7 +13,7 @@ public class KlushaModel extends GeoModel<KlushaEntity> {
         );
     }
 
-    @id86240433 (@Override)
+    @Override
     public ResourceLocation getTextureResource(KlushaEntity entity) {
         return new ResourceLocation(
                 TutorialMod.MOD_ID,
@@ -21,7 +21,7 @@ public class KlushaModel extends GeoModel<KlushaEntity> {
         );
     }
 
-    @id86240433 (@Override)
+    @Override
     public ResourceLocation getAnimationResource(KlushaEntity entity) {
         return new ResourceLocation(
                 TutorialMod.MOD_ID,
