@@ -135,7 +135,7 @@ public class KlushaEntity extends ThrowableItemProjectile implements GeoEntity {
             setDeltaMove
 
 
-ment(difference.normalize().scale(1.5));
+setDeltaMovement(difference.normalize().scale(1.5));
             hasImpulse = true;
             return;
         }
