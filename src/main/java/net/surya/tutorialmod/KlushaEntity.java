@@ -1,5 +1,6 @@
 package net.surya.tutorialmod;
 
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -11,7 +12,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.damagesource.DamageSource;
 
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
@@ -91,38 +91,27 @@ public class KlushaEntity extends ThrowableItemProjectile implements GeoEntity {
     public void tick() {
         super.tick();
 
+        // Вращение модели во время полёта.
         if (!returning && !isRemoved()) {
             setYRot(getYRot() + 25.0F);
             setXRot(getXRot() + 25.0F);
             setRot(getYRot(), getXRot());
         }
 
+        // Дальнейшую логику выполняет сервер.
         if (level().isClientSide) {
             return;
         }
 
         Entity owner = getOwner();
 
-Vec3 difference =
-        player.getEyePosition().subtract(position());
+        // Возвращение Клуши к игроку.
+        if (returning) {
 
-if (difference.lengthSqr() < 2.25) {
-    if (!itemReturned) {
-        ItemStack stack = getItem().copyWithCount(1);
-        itemReturned = true;
-
-        if (!player.getInventory().add(stack)) {
-            player.drop(stack, false);
-        }
-    }
-
-    discard();
-    return;
-}
-
-setDeltaMovement(difference.normalize().scale(1.5));
-hasImpulse = true;
-return;
+            if (returnDelay > 0) {
+                returnDelay--;
+                setDeltaMovement(Vec3.ZERO);
+                return;
             }
 
             if (!(owner instanceof Player player) || !player.isAlive()) {
@@ -133,13 +122,17 @@ return;
             Vec3 difference =
                     player.getEyePosition().subtract(position());
 
+            // Игрок поймал Клушу.
             if (difference.lengthSqr() < 2.25) {
+
                 if (!itemReturned) {
                     ItemStack stack = getItem().copyWithCount(1);
                     itemReturned = true;
 
                     if (!player.getInventory().add(stack)) {
-                        player.drop(stack, false);
+
+
+player.drop(stack, false);
                     }
                 }
 
@@ -147,16 +140,19 @@ return;
                 return;
             }
 
-            setDeltaMove
+            // Движение обратно к игроку.
+            setDeltaMovement(
+                    difference.normalize().scale(1.5)
+            );
 
-
-setDeltaMovement(difference.normalize().scale(1.5));
             hasImpulse = true;
             return;
         }
 
+        // Подсчёт пройденного расстояния.
         distanceTravelled += getDeltaMovement().length();
 
+        // Возвращение после 15 блоков.
         if (distanceTravelled >= 15.0) {
             returning = true;
             returnDelay = 10;
@@ -173,15 +169,18 @@ setDeltaMovement(difference.normalize().scale(1.5));
         Entity target = result.getEntity();
         Entity owner = getOwner();
 
+        // Нанесение урона при попадании.
         if (target instanceof LivingEntity livingTarget
                 && owner instanceof LivingEntity attacker
                 && target != owner) {
+
             livingTarget.hurt(
                     damageSources().thrown(this, attacker),
                     12.0F
             );
         }
 
+        // После попадания Клуша возвращается.
         returning = true;
         returnDelay = 10;
         setDeltaMovement(Vec3.ZERO);
