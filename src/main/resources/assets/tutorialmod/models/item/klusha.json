@@ -1,6 +1,3 @@
 {
-  "parent": "minecraft:item/handheld",
-  "textures": {
-    "layer0": "tutorialmod:entity/klusha"
-  }
-}
+  "parent": "builtin/entity"
+ }
