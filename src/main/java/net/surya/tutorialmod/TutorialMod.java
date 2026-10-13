@@ -2,8 +2,6 @@ package net.surya.tutorialmod;
 
 import com.mojang.logging.LogUtils;
 
-import net.minecraft.client.renderer.entity.ThrownItemRenderer;
-
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -62,14 +60,14 @@ public class TutorialMod {
         public static void onClientSetup(FMLClientSetupEvent event) {
         }
 
-        // Рендерер летящей Клуши
+        // GeckoLib-рендерер летящей Клуши
         @SubscribeEvent
         public static void registerRenderers(
                 EntityRenderersEvent.RegisterRenderers event
         ) {
             event.registerEntityRenderer(
                     ModEntities.KLUSHA.get(),
-                    ThrownItemRenderer::new
+                    KlushaRenderer::new
             );
         }
     }
