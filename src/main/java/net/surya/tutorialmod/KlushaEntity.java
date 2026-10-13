@@ -11,13 +11,31 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.damagesource.DamageSource;
 
-public class KlushaEntity extends ThrowableItemProjectile {
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.util.GeckoLibUtil;
+
+public class KlushaEntity extends ThrowableItemProjectile implements GeoEntity {
 
     private double distanceTravelled = 0.0;
     private boolean returning = false;
     private boolean itemReturned = false;
     private int returnDelay = 0;
+
+    private final AnimatableInstanceCache cache =
+            GeckoLibUtil.createInstanceCache(this);
+
+    private static final RawAnimation ATTACK =
+            RawAnimation.begin().thenPlay("attack");
+
+    private static final RawAnimation ATTACK1A =
+            RawAnimation.begin().thenPlay("attack1a");
 
     public KlushaEntity(
             EntityType<? extends KlushaEntity> type,
@@ -34,6 +52,27 @@ public class KlushaEntity extends ThrowableItemProjectile {
     }
 
     @Override
+    public void registerControllers(
+            AnimatableManager.ControllerRegistrar controllers) {
+
+        controllers.add(
+                new AnimationController<KlushaEntity>(
+                        this,
+                        "controller",
+                        0,
+                        state -> PlayState.STOP
+                )
+                .triggerableAnim("attack", ATTACK)
+                .triggerableAnim("attack1a", ATTACK1A)
+        );
+    }
+
+    @Override
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return cache;
+    }
+
+    @Override
     protected Item getDefaultItem() {
         return ModItems.KLUSHA.get();
     }
@@ -44,9 +83,7 @@ public class KlushaEntity extends ThrowableItemProjectile {
     }
 
     @Override
-    public boolean hurt(
-            net.minecraft.world.damagesource.DamageSource source,
-            float amount) {
+    public boolean hurt(DamageSource source, float amount) {
         return false;
     }
 
@@ -54,7 +91,6 @@ public class KlushaEntity extends ThrowableItemProjectile {
     public void tick() {
         super.tick();
 
-        // Вращение модели во время полёта
         if (!returning && !isRemoved()) {
             setYRot(getYRot() + 25.0F);
             setXRot(getXRot() + 25.0F);
@@ -96,7 +132,10 @@ public class KlushaEntity extends ThrowableItemProjectile {
                 return;
             }
 
-            setDeltaMovement(difference.normalize().scale(1.5));
+            setDeltaMove
+
+
+ment(difference.normalize().scale(1.5));
             hasImpulse = true;
             return;
         }
@@ -142,6 +181,3 @@ public class KlushaEntity extends ThrowableItemProjectile {
         }
     }
 }
-
-
-
