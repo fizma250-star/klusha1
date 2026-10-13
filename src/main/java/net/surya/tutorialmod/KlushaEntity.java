@@ -103,11 +103,26 @@ public class KlushaEntity extends ThrowableItemProjectile implements GeoEntity {
 
         Entity owner = getOwner();
 
-        if (returning) {
-            if (returnDelay > 0) {
-                returnDelay--;
-                setDeltaMovement(Vec3.ZERO);
-                return;
+Vec3 difference =
+        player.getEyePosition().subtract(position());
+
+if (difference.lengthSqr() < 2.25) {
+    if (!itemReturned) {
+        ItemStack stack = getItem().copyWithCount(1);
+        itemReturned = true;
+
+        if (!player.getInventory().add(stack)) {
+            player.drop(stack, false);
+        }
+    }
+
+    discard();
+    return;
+}
+
+setDeltaMovement(difference.normalize().scale(1.5));
+hasImpulse = true;
+return;
             }
 
             if (!(owner instanceof Player player) || !player.isAlive()) {
