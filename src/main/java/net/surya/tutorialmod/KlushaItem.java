@@ -3,6 +3,7 @@ package net.surya.tutorialmod;
 import java.util.function.Consumer;
 
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -12,16 +13,32 @@ import net.minecraft.world.item.Tiers;
 import net.minecraft.world.level.Level;
 
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
+import net.minecraftforge.event.entity.player.AttackEntityEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 
 import software.bernie.geckolib.animatable.GeoItem;
 import software.bernie.geckolib.animatable.SingletonGeoAnimatable;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager;
 import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.RawAnimation;
 import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
+@Mod.EventBusSubscriber(
+        modid = TutorialMod.MOD_ID,
+        bus = Mod.EventBusSubscriber.Bus.FORGE
+)
 public class KlushaItem extends SwordItem implements GeoItem {
+
+    private static final String COMBO_KEY = "KlushaCombo";
+
+    private static final RawAnimation ATTACK_ANIM =
+            RawAnimation.begin().thenPlay("attack");
+
+    private static final RawAnimation ATTACK1A_ANIM =
+            RawAnimation.begin().thenPlay("attack1a");
 
     private final AnimatableInstanceCache cache =
             GeckoLibUtil.createInstanceCache(this);
@@ -43,15 +60,17 @@ public class KlushaItem extends SwordItem implements GeoItem {
                         0,
                         state -> PlayState.STOP
                 )
+                .triggerableAnim("attack", ATTACK_ANIM)
+                .triggerableAnim("attack1a", ATTACK1A_ANIM)
         );
     }
 
-    @Override
+    @@Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {
         return cache;
     }
 
-    @Override
+    @id86240433 (@Override)
     public void initializeClient(
             Consumer<IClientItemExtensions> consumer) {
 
@@ -104,12 +123,49 @@ public class KlushaItem extends SwordItem implements GeoItem {
                 stack.shrink(1);
             }
 
-            player.getCooldowns().addCooldown(this, 60);
+            player.getCooldowns().addCooldow
+
+
+n(this, 60);
         }
 
         return InteractionResultHolder.sidedSuccess(
                 stack,
                 level.isClientSide
+        );
+    }
+
+    @SubscribeEvent
+    public static void onPlayerAttack(AttackEntityEvent event) {
+        Player player = event.getEntity();
+
+        if (!(player.level() instanceof ServerLevel serverLevel)) {
+            return;
+        }
+
+        ItemStack stack = player.getMainHandItem();
+
+        if (!(stack.getItem() instanceof KlushaItem item)) {
+            return;
+        }
+
+        int combo = player.getPersistentData().getInt(COMBO_KEY);
+
+        String animation;
+
+        if (combo % 2 == 0) {
+            animation = "attack";
+        } else {
+            animation = "attack1a";
+        }
+
+        player.getPersistentData().putInt(COMBO_KEY, combo + 1);
+
+        item.triggerAnim(
+                player,
+                GeoItem.getOrAssignId(stack, serverLevel),
+                "controller",
+                animation
         );
     }
 }
