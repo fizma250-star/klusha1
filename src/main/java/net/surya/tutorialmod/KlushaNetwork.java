@@ -4,7 +4,6 @@ import java.util.function.Supplier;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.network.FriendlyByteBuf;
 
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -32,17 +31,24 @@ public class KlushaNetwork {
                     PROTOCOL::equals
             );
 
+    private static boolean registered = false;
+
     @SubscribeEvent
     public static void onCommonSetup(FMLCommonSetupEvent event) {
-        event.enqueueWork(() ->
+        event.enqueueWork(() -> {
+            if (!registered) {
                 CHANNEL.registerMessage(
                         0,
                         AirAttackPacket.class,
-                        (message, buffer) -> {},
+                        (message, buffer) -> {
+                        },
                         buffer -> new AirAttackPacket(),
                         AirAttackPacket::handle
-                )
-        );
+                );
+
+                registered = true;
+            }
+        });
     }
 
     public static void sendAirAttack() {
@@ -72,6 +78,8 @@ public class KlushaNetwork {
         }
     }
 }
+
+
 
 
 
