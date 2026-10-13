@@ -65,12 +65,12 @@ public class KlushaItem extends SwordItem implements GeoItem {
         );
     }
 
-    @@Override
+    @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {
         return cache;
     }
 
-    @id86240433 (@Override)
+    @Override
     public void initializeClient(
             Consumer<IClientItemExtensions> consumer) {
 
