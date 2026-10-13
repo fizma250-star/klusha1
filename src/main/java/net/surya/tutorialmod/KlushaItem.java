@@ -6,6 +6,7 @@ import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwordItem;
@@ -14,6 +15,7 @@ import net.minecraft.world.level.Level;
 
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -45,7 +47,6 @@ public class KlushaItem extends SwordItem implements GeoItem {
 
     public KlushaItem(Properties properties) {
         super(Tiers.WOOD, 14, -2.4F, properties);
-
         SingletonGeoAnimatable.registerSyncedAnimatable(this);
     }
 
@@ -75,7 +76,6 @@ public class KlushaItem extends SwordItem implements GeoItem {
             Consumer<IClientItemExtensions> consumer) {
 
         consumer.accept(new IClientItemExtensions() {
-
             private KlushaItemRenderer renderer;
 
             @Override
@@ -83,12 +83,18 @@ public class KlushaItem extends SwordItem implements GeoItem {
                 if (renderer == null) {
                     renderer = new KlushaItemRenderer();
                 }
-
                 return renderer;
             }
         });
     }
 
+    // Отключаем стандартный взмах предмета.
+    @Override
+    public boolean onEntitySwing(ItemStack stack, LivingEntity entity) {
+        return true;
+    }
+
+    // Правый клик: бросок Клуши — оставляем прежнюю механику.
     @Override
     public InteractionResultHolder<ItemStack> use(
             Level level,
@@ -132,10 +138,27 @@ public class KlushaItem extends SwordItem implements GeoItem {
         );
     }
 
+    // ЛКМ по существу.
     @SubscribeEvent
     public static void onPlayerAttack(AttackEntityEvent event) {
-        Player player = event.getEntity();
+        playAttackAnimation(event.getEntity());
+    }
 
+    // ЛКМ по воздуху: отправляем запрос серверу.
+    @SubscribeEvent
+    public static void onLeftClickEmpty(
+            PlayerInteractEvent.LeftClickEmpty event) {
+
+        Player player = event.getEntity();
+        ItemStack stack = player.getMainHandItem();
+
+        if (stack.getItem() instanceof KlushaItem) {
+            KlushaNetwork.sendAirAttack();
+        }
+    }
+
+    // Общая логика чередования анимаций.
+    public static void playAttackAnimation(Player player) {
         if (!(player.level() instanceof ServerLevel serverLevel)) {
             return;
         }
@@ -148,13 +171,9 @@ public class KlushaItem extends SwordItem implements GeoItem {
 
         int combo = player.getPersistentData().getInt(COMBO_KEY);
 
-        String animation;
-
-        if (combo % 2 == 0) {
-            animation = "attack";
-        } else {
-            animation = "attack1a";
-        }
+        String animation = (combo % 2 == 0)
+                ? "attack"
+                : "attack1a";
 
         player.getPersistentData().putInt(COMBO_KEY, combo + 1);
 
@@ -166,3 +185,6 @@ public class KlushaItem extends SwordItem implements GeoItem {
         );
     }
 }
+
+
+
