@@ -123,10 +123,7 @@ public class KlushaItem extends SwordItem implements GeoItem {
                 stack.shrink(1);
             }
 
-            player.getCooldowns().addCooldow
-
-
-n(this, 60);
+            player.getCooldowns().addCooldown(this, 60);
         }
 
         return InteractionResultHolder.sidedSuccess(
