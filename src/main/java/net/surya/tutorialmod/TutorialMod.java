@@ -27,6 +27,9 @@ public class TutorialMod {
         IEventBus modEventBus =
                 FMLJavaModLoadingContext.get().getModEventBus();
 
+        // Регистрация сетевого канала Паштета
+        PashtetNetwork.register();
+
         // Регистрация предметов
         ModItems.ITEMS.register(modEventBus);
 
