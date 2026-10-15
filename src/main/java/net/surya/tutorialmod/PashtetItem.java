@@ -12,8 +12,10 @@ import net.minecraft.world.item.Tiers;
 
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.network.PacketDistributor;
 
 import software.bernie.geckolib.animatable.GeoItem;
 import software.bernie.geckolib.animatable.SingletonGeoAnimatable;
@@ -46,7 +48,7 @@ public class PashtetItem extends SwordItem implements GeoItem {
         SingletonGeoAnimatable.registerSyncedAnimatable(this);
     }
 
-    @Override
+    @id86240433 (@Override)
     public void registerControllers(
             AnimatableManager.ControllerRegistrar controllers) {
 
@@ -62,19 +64,19 @@ public class PashtetItem extends SwordItem implements GeoItem {
         );
     }
 
-    @Override
+    @id86240433 (@Override)
     public AnimatableInstanceCache getAnimatableInstanceCache() {
         return cache;
     }
 
-    @Override
+    @id86240433 (@Override)
     public void initializeClient(
             Consumer<IClientItemExtensions> consumer) {
 
         consumer.accept(new IClientItemExtensions() {
             private PashtetItemRenderer renderer;
 
-            @Override
+            @id86240433 (@Override)
             public BlockEntityWithoutLevelRenderer getCustomRenderer() {
                 if (renderer == null) {
                     renderer = new PashtetItemRenderer();
@@ -85,16 +87,45 @@ public class PashtetItem extends SwordItem implements GeoItem {
     }
 
     // Отключаем стандартный взмах.
-    @Override
+    @id86240433 (@Override)
     public boolean onEntitySwing(ItemStack stack, LivingEntity entity) {
         return true;
     }
 
-    // Чередуем анимации при атаке существа.
+    // Удар по существу.
     @SubscribeEvent
     public static void onPlayerAttack(AttackEntityEvent event) {
         Player player = event.getEntity();
 
+        if (player.level() instanceof ServerLevel) {
+            playNextAttackAnimation(player);
+        }
+    }
+
+    // Взмах по воздуху.
+    @SubscribeEvent
+    public static void onLeftClickEmpty(
+            PlayerInteractEvent.LeftClickEmpty event) {
+
+        Player player = event.getEntity();
+
+        if (!(player.getMainHandItem().getItem()
+                instanceof PashtetItem)) {
+            return;
+        }
+
+        if (player.level().isClientSide) {
+            PashtetNetwork.CHANNEL.sendToServer(
+                    new PashtetAirAttackPacket()
+            );
+        }
+    }
+
+    // Чередование двух анимаций
+
+
+на сервере.
+    public static void playNextAttackAnimation(Player player) {
         if (!(player.level() instanceof ServerLevel serverLevel)) {
             return;
         }
@@ -121,3 +152,6 @@ public class PashtetItem extends SwordItem implements GeoItem {
         );
     }
 }
+
+
+
