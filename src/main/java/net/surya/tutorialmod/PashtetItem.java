@@ -124,7 +124,6 @@ public class PashtetItem extends SwordItem implements GeoItem {
     // Чередование двух анимаций
 
 
-на сервере.
     public static void playNextAttackAnimation(Player player) {
         if (!(player.level() instanceof ServerLevel serverLevel)) {
             return;
