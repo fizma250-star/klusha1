@@ -48,7 +48,7 @@ public class PashtetItem extends SwordItem implements GeoItem {
         SingletonGeoAnimatable.registerSyncedAnimatable(this);
     }
 
-    @id86240433 (@Override)
+    @Override
     public void registerControllers(
             AnimatableManager.ControllerRegistrar controllers) {
 
@@ -64,19 +64,19 @@ public class PashtetItem extends SwordItem implements GeoItem {
         );
     }
 
-    @id86240433 (@Override)
+    @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {
         return cache;
     }
 
-    @id86240433 (@Override)
+    @Override
     public void initializeClient(
             Consumer<IClientItemExtensions> consumer) {
 
         consumer.accept(new IClientItemExtensions() {
             private PashtetItemRenderer renderer;
 
-            @id86240433 (@Override)
+            @Override
             public BlockEntityWithoutLevelRenderer getCustomRenderer() {
                 if (renderer == null) {
                     renderer = new PashtetItemRenderer();
@@ -87,7 +87,7 @@ public class PashtetItem extends SwordItem implements GeoItem {
     }
 
     // Отключаем стандартный взмах.
-    @id86240433 (@Override)
+    @Override
     public boolean onEntitySwing(ItemStack stack, LivingEntity entity) {
         return true;
     }
